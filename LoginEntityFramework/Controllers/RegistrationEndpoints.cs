@@ -2,6 +2,7 @@
 using LoginEntityFramework.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NuGet.Protocol.Plugins;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -69,23 +70,58 @@ public static class RegistrationEndpoints
         })
         .WithName("CreateRegistration")
         .Produces<Registration>(StatusCodes.Status201Created);
-
-
-        routes.MapDelete("/api/Registration/{id}", async (int Id, LoginEntityFrameworkContext db) =>
-        {
-            if (await db.Registration.FindAsync(Id) is Registration registration)
+            routes.MapDelete("/api/Registration/{id}", async (int Id, LoginEntityFrameworkContext db) =>
             {
-                db.Registration.Remove(registration);
-                await db.SaveChangesAsync();
-                return Results.Ok(registration);
-            }
+                if (await db.Registration.FindAsync(Id) is Registration registration)
+                {
+                    db.Registration.Remove(registration);
+                    await db.SaveChangesAsync();
+                    return Results.Ok(registration);
+                }
 
-            return Results.NotFound();
-        })
-        .WithName("DeleteRegistration")
-        .Produces<Registration>(StatusCodes.Status200OK)
-        .Produces(StatusCodes.Status404NotFound);
-    }
+                return Results.NotFound();
+            })
+            .WithName("DeleteRegistration")
+            .Produces<Registration>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status404NotFound);
+            routes.MapPost("/api/Login", async (Registration request, LoginEntityFrameworkContext db) =>
+            {
+                var foundUser = await db.Registration.FirstOrDefaultAsync(u => u.Email == request.Email);
+
+                if (foundUser == null)
+                {
+                    return Results.NotFound();
+                }
+
+                byte[] passwordBytes = Encoding.UTF8.GetBytes(request.Password);
+                byte[] hashBytes;
+                using (SHA256 sha256 = SHA256.Create())
+                {
+                    hashBytes = sha256.ComputeHash(passwordBytes);
+                }
+                string passwordHash = Convert.ToBase64String(hashBytes);
+
+                if (passwordHash != foundUser.Password)
+                {
+                    return Results.Unauthorized();
+                }
+
+                if (foundUser.Token == request.Token)
+                {
+                    return Results.Ok(foundUser);
+                }
+                else
+                {
+                    return Results.Unauthorized();
+                }
+
+            })
+            .WithName("Login")
+            .Produces<Registration>(StatusCodes.Status200OK)
+            .Produces(StatusCodes.Status401Unauthorized);
+
+
+            }
 
         private static string GenerateJwtToken(int userId, string email)
         {
@@ -104,13 +140,6 @@ public static class RegistrationEndpoints
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
-
-            // Limitar la longitud del token a 120 caracteres
-            if (tokenString.Length > 120)
-            {
-                tokenString = tokenString.Substring(0, 120);
-            }
-
             return tokenString;
         }
     }
