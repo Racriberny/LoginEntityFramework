@@ -125,8 +125,8 @@ public static class RegistrationEndpoints
 
         private static string GenerateJwtToken(int userId, string email)
         {
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes("clave-secreta-para-generar-el-token"); // Reemplaza esto con tu clave secreta
+            var tokenHandlerr = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes("clave-secreta-para-generar-el-token");
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[]
@@ -138,9 +138,10 @@ public static class RegistrationEndpoints
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
-            return tokenString;
+            var token = tokenHandlerr.CreateToken(tokenDescriptor);
+            var tokenString = tokenHandlerr.WriteToken(token);
+            var tokenSinEspacio = tokenString.Trim();
+            return tokenSinEspacio;
         }
     }
 }
