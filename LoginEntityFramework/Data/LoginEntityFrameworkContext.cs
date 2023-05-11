@@ -9,6 +9,6 @@ namespace LoginEntityFramework.Data
         {
         }
 
-        public DbSet<LoginEntityFramework.Models.Registration> Registration { get; set; } = default!;
+        public DbSet<LoginEntityFramework.Models.Usuarios> Usuarios { get; set; } = default!;
     }
 }

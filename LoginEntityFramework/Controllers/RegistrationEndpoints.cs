@@ -15,27 +15,27 @@ public static class RegistrationEndpoints
 {
 	public static void MapRegistrationEndpoints (this IEndpointRouteBuilder routes)
     {
-        routes.MapGet("/api/Registration", async (LoginEntityFrameworkContext db) =>
+        routes.MapGet("/api/Registration/all", async (LoginEntityFrameworkContext db) =>
         {
-            return await db.Registration.ToListAsync();
+            return await db.Usuarios.ToListAsync();
         })
         .WithName("GetAllRegistrations")
-        .Produces<List<Registration>>(StatusCodes.Status200OK);
+        .Produces<List<Usuarios>>(StatusCodes.Status200OK);
 
         routes.MapGet("/api/Registration/{id}", async (int Id, LoginEntityFrameworkContext db) =>
         {
-            return await db.Registration.FindAsync(Id)
-                is Registration model
+            return await db.Usuarios.FindAsync(Id)
+                is Usuarios model
                     ? Results.Ok(model)
                     : Results.NotFound();
         })
         .WithName("GetRegistrationById")
-        .Produces<Registration>(StatusCodes.Status200OK)
+        .Produces<Usuarios>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status404NotFound);
 
-        routes.MapPut("/api/Registration/{id}", async (int Id, Registration registration, LoginEntityFrameworkContext db) =>
+        routes.MapPut("/api/Registration/{id}", async (int Id, Usuarios registration, LoginEntityFrameworkContext db) =>
         {
-            var foundModel = await db.Registration.FindAsync(Id);
+            var foundModel = await db.Usuarios.FindAsync(Id);
 
             if (foundModel is null)
             {
@@ -52,41 +52,41 @@ public static class RegistrationEndpoints
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status204NoContent);
 
-        routes.MapPost("/api/Registration/", async (Registration registration, LoginEntityFrameworkContext db) =>
+        routes.MapPost("/api/Registration/registration", async (Usuarios registration, LoginEntityFrameworkContext db) =>
         {
-            var tokenString = GenerateJwtToken(registration.Id, registration.Email);
-            byte[] passwordBytes = Encoding.UTF8.GetBytes(registration.Password);
+            var tokenString = GenerateJwtToken(registration.Id, registration.Correo);
+            byte[] passwordBytes = Encoding.UTF8.GetBytes(registration.Passwd);
             byte[] hashBytes;
             using (SHA256 sha256 = SHA256.Create())
             {
                 hashBytes = sha256.ComputeHash(passwordBytes);
             }
             string passwordHash = Convert.ToBase64String(hashBytes);
-            registration.Password = passwordHash;
+            registration.Passwd = passwordHash;
             registration.Token = tokenString;
-            db.Registration.Add(registration);
+            db.Usuarios.Add(registration);
             await db.SaveChangesAsync();
-            return Results.Created($"/Registrations/{registration.Id}", registration);
+            return Results.Ok("Usuario Creado");
         })
         .WithName("CreateRegistration")
-        .Produces<Registration>(StatusCodes.Status201Created);
-            routes.MapDelete("/api/Registration/{id}", async (int Id, LoginEntityFrameworkContext db) =>
+        .Produces<Usuarios>(StatusCodes.Status201Created);
+            routes.MapDelete("/api/Registration/delete/{Id:int}", async (int Id, LoginEntityFrameworkContext db) =>
             {
-                if (await db.Registration.FindAsync(Id) is Registration registration)
+                if (await db.Usuarios.FindAsync(Id) is Usuarios registration)
                 {
-                    db.Registration.Remove(registration);
+                    db.Usuarios.Remove(registration);
                     await db.SaveChangesAsync();
-                    return Results.Ok(registration);
+                    return Results.Ok("Usuario Eliminado Correctamente ");
                 }
 
                 return Results.NotFound();
             })
             .WithName("DeleteRegistration")
-            .Produces<Registration>(StatusCodes.Status200OK)
+            .Produces<Usuarios>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status404NotFound);
-            routes.MapPost("/api/Login", async (Registration request, LoginEntityFrameworkContext db) =>
+            routes.MapPost("/api/Login", async (RegistrationLogin request, LoginEntityFrameworkContext db) =>
             {
-                var foundUser = await db.Registration.FirstOrDefaultAsync(u => u.Email == request.Email);
+                var foundUser = await db.Usuarios.FirstOrDefaultAsync(u => u.Correo == request.Email);
 
                 if (foundUser == null)
                 {
@@ -101,14 +101,14 @@ public static class RegistrationEndpoints
                 }
                 string passwordHash = Convert.ToBase64String(hashBytes);
 
-                if (passwordHash != foundUser.Password)
+                if (request.Password == foundUser.Passwd)
                 {
-                    return Results.Unauthorized();
+                    return Results.Ok("Login Correcto");
                 }
 
                 if (foundUser.Token == request.Token)
                 {
-                    return Results.Ok(foundUser);
+                    return Results.Ok("Login correcto");
                 }
                 else
                 {
@@ -117,7 +117,7 @@ public static class RegistrationEndpoints
 
             })
             .WithName("Login")
-            .Produces<Registration>(StatusCodes.Status200OK)
+            .Produces<Usuarios>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status401Unauthorized);
 
 

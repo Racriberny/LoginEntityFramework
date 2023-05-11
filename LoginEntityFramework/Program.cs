@@ -8,7 +8,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<LoginEntityFrameworkContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("LoginEntityFrameworkContext") ?? throw new InvalidOperationException("Connection string 'LoginEntityFrameworkContext' not found.")));
 
+
+var MyAllowSpecifiOrigins = "_myAllowSpecifiOrigins";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: MyAllowSpecifiOrigins,
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+        });
+});
+
 // Add services to the container.
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -25,7 +39,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors(MyAllowSpecifiOrigins);
 app.UseAuthorization();
 
 app.MapControllers();
