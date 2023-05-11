@@ -46,4 +46,6 @@ app.MapControllers();
 
 app.MapRegistrationEndpoints();
 
+app.MapPers_AltaEndpoints();
+
 app.Run();
