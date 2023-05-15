@@ -18,5 +18,6 @@
         public String Telefono { get; set; }
         public String Horario { get; set; }
         public String Observaciones { get; set; }
+        public DateTime fecha { get; set; }
     }
 }

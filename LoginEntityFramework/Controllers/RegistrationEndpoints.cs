@@ -52,7 +52,7 @@ public static class RegistrationEndpoints
         .Produces(StatusCodes.Status404NotFound)
         .Produces(StatusCodes.Status204NoContent);
 
-        routes.MapPost("/api/Registration/registration", async (Usuarios registration, LoginEntityFrameworkContext db) =>
+        routes.MapPost("/api/Registration/registrar", async (Usuarios registration, LoginEntityFrameworkContext db) =>
         {
             var tokenString = GenerateJwtToken(registration.Id, registration.Correo);
             byte[] passwordBytes = Encoding.UTF8.GetBytes(registration.Passwd);
