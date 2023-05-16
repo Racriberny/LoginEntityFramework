@@ -45,6 +45,8 @@ public static class Pers_AltaEndpoints
             foundModel.RetiradaMaquina = pers_Alta.RetiradaMaquina;
             foundModel.MaquinaRetirada = pers_Alta.MaquinaRetirada;
             foundModel.Contadores = pers_Alta.Contadores;
+            foundModel.DireccionEnvio = pers_Alta.DireccionEnvio;
+            foundModel.Contacto = pers_Alta.Contacto;
             foundModel.Telefono = pers_Alta.Telefono;
             foundModel.Horario = pers_Alta.Horario;
             foundModel.Observaciones = pers_Alta.Observaciones;
@@ -60,6 +62,8 @@ public static class Pers_AltaEndpoints
 
         routes.MapPost("/api/Pers_Alta/add", async (Pers_Portal_Servicios_Acta_Instalacion_Comercial pers_Alta, LoginEntityFrameworkContext db) =>
         {
+            pers_Alta.fecha = DateTime.Now;
+
             db.Pers_Portal_Servicios_Acta_Instalacion_Comercial.Add(pers_Alta);
             await db.SaveChangesAsync();
             return Results.Created($"/Pers_Altas/{pers_Alta.Id}", pers_Alta);
