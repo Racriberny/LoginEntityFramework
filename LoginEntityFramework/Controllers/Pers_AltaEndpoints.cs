@@ -66,7 +66,7 @@ public static class Pers_AltaEndpoints
 
             db.Pers_Portal_Servicios_Acta_Instalacion_Comercial.Add(pers_Alta);
             await db.SaveChangesAsync();
-            return Results.Created($"/Pers_Altas/{pers_Alta.Id}", pers_Alta);
+            return Results.Ok("Creado");
         })
         .WithName("CreatePers_Alta")
         .Produces<Pers_Portal_Servicios_Acta_Instalacion_Comercial>(StatusCodes.Status201Created);
