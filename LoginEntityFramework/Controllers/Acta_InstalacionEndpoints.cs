@@ -34,7 +34,26 @@ public static class Acta_InstalacionEndpoints
                 return Results.NotFound();
             }
 
-            db.Update(acta_Instalacion);
+            foundModel.IdTecnico = acta_Instalacion.IdTecnico;
+            foundModel.IdParte = acta_Instalacion.IdParte;
+            foundModel.Modelo = acta_Instalacion.Modelo;
+            foundModel.Serie = acta_Instalacion.Serie;
+            foundModel.IdContacto = acta_Instalacion.IdContacto;
+            foundModel.Telefono = acta_Instalacion.Telefono;
+            foundModel.Email = acta_Instalacion.Email;
+            foundModel.DireccionIp = acta_Instalacion.DireccionIp;
+            foundModel.IdTipo = acta_Instalacion.IdTipo;
+            foundModel.Ubicacion = acta_Instalacion.Ubicacion;
+            foundModel.CajaToner = acta_Instalacion.CajaToner;
+            foundModel.Adhesivo = acta_Instalacion.Adhesivo;
+            foundModel.Retirar = acta_Instalacion.Retirar;
+            foundModel.Marca = acta_Instalacion.Marca;
+            foundModel.ModeloMaquina = acta_Instalacion.ModeloMaquina;
+            foundModel.SerieMaquina = acta_Instalacion.SerieMaquina;
+            foundModel.N_Copias = acta_Instalacion.N_Copias;
+            foundModel.B_N = acta_Instalacion.B_N;
+            foundModel.CL = acta_Instalacion.CL;
+            foundModel.Observaciones = acta_Instalacion.Observaciones;
 
             await db.SaveChangesAsync();
 
