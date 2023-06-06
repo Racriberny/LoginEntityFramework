@@ -48,4 +48,6 @@ app.MapRegistrationEndpoints();
 
 app.MapPers_AltaEndpoints();
 
+app.MapActa_InstalacionEndpoints();
+
 app.Run();
