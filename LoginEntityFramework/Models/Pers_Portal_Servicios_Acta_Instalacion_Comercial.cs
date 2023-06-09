@@ -7,12 +7,12 @@
         public int IdProyecto { get; set; }
         public int IdComercial { get; set; }
         public Boolean Mantenimiento { get; set; }
-        public String Puestos { get; set; }
-        public String SO { get; set;}
-        public Boolean ConexionRed { get; set;}
-        public Boolean RetiradaMaquina { get; set; }
-        public String MaquinaRetirada { get; set;}
-        public int Contadores{ get; set; }
+        public String? Puestos { get; set; }
+        public String? SO { get; set;}
+        public Boolean? ConexionRed { get; set;}
+        public Boolean? RetiradaMaquina { get; set; }
+        public String? ModeloMaquina { get; set;}
+        public String? Contadores{ get; set; }
         public String DireccionEnvio { get; set; }
         public String Contacto { get; set; }
         public String Telefono { get; set; }

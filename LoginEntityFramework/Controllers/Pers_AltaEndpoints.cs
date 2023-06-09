@@ -43,7 +43,7 @@ public static class Pers_AltaEndpoints
             foundModel.SO = pers_Alta.SO;
             foundModel.ConexionRed = pers_Alta.ConexionRed;
             foundModel.RetiradaMaquina = pers_Alta.RetiradaMaquina;
-            foundModel.MaquinaRetirada = pers_Alta.MaquinaRetirada;
+            foundModel.ModeloMaquina = pers_Alta.ModeloMaquina;
             foundModel.Contadores = pers_Alta.Contadores;
             foundModel.DireccionEnvio = pers_Alta.DireccionEnvio;
             foundModel.Contacto = pers_Alta.Contacto;
